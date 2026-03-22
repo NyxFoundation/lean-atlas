@@ -1,0 +1,7 @@
+/.lake
+web/.next/
+web/node_modules/
+web/public/data/graph.json
+web/public/lean-source/
+node_modules/
+*.cache

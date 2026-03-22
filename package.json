@@ -1,0 +1,22 @@
+{
+  "name": "lean-atlas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm -C web dev",
+    "build": "pnpm -C web build",
+    "start": "pnpm -C web start",
+    "lint": "pnpm -C web lint",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.26.0",
+  "devDependencies": {
+    "@openai/codex": "^0.101.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-toml": "^2.0.6"
+  }
+}

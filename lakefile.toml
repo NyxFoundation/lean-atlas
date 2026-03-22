@@ -1,0 +1,16 @@
+name = "lean-atlas"
+version = "0.1.0"
+keywords = ["tools", "visualization", "metadata"]
+defaultTargets = ["LeanAtlas"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+
+[[lean_lib]]
+name = "LeanAtlas"
+
+[[lean_exe]]
+name = "atlas"
+root = "LeanAtlas.CLI.Main"
+supportInterpreter = true

@@ -1,0 +1,151 @@
+lockfileVersion: "9.0"
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+  .:
+    devDependencies:
+      "@openai/codex":
+        specifier: ^0.101.0
+        version: 0.101.0
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
+      prettier-plugin-toml:
+        specifier: ^2.0.6
+        version: 2.0.6(prettier@3.8.1)
+
+packages:
+  "@openai/codex@0.101.0":
+    resolution:
+      {
+        integrity: sha512-H874q5K5I3chrT588BaddMr7GNvRYypc8C1MKWytNUF2PgxWMko2g/2DgKbt5OdajZKMsWdbsPywu34KQGf5Qw==,
+      }
+    engines: { node: ">=16" }
+    hasBin: true
+
+  "@openai/codex@0.101.0-darwin-arm64":
+    resolution:
+      {
+        integrity: sha512-unk4rTRQQ9o0w2Upu35IsJHpoZHJ+tU/myn6LNhUjcP9FrjLnEcAQJ6WIMtdTYVPja1PGhFSO0DNxV79GMvehw==,
+      }
+    engines: { node: ">=16" }
+    cpu: [arm64]
+    os: [darwin]
+
+  "@openai/codex@0.101.0-darwin-x64":
+    resolution:
+      {
+        integrity: sha512-+KFi1IapCQGd3vLQp2lI4xI3hu2QffDZYt7Fhfw6NxEFOKhHnTamRtQ5yI8jYQcYF+pQfYF2fyiuXLM1lITLQw==,
+      }
+    engines: { node: ">=16" }
+    cpu: [x64]
+    os: [darwin]
+
+  "@openai/codex@0.101.0-linux-arm64":
+    resolution:
+      {
+        integrity: sha512-RkDnQeq7M6ZBtD+8i+I5ewjjOf02BcJq6r1kN4RBewfAQBsz6B73Ns3OrI2bHVRsuPtAf8Cf1S4xg/eFZT2Omg==,
+      }
+    engines: { node: ">=16" }
+    cpu: [arm64]
+    os: [linux]
+
+  "@openai/codex@0.101.0-linux-x64":
+    resolution:
+      {
+        integrity: sha512-SJeEdQ4ReEU3nvtceZ1uY3me6oWoB3djr3GnZmAUCEUuYEWD1kRGprAyJB1N0B+8zhSv0SU2e9sX5t3aCV4AwQ==,
+      }
+    engines: { node: ">=16" }
+    cpu: [x64]
+    os: [linux]
+
+  "@openai/codex@0.101.0-win32-arm64":
+    resolution:
+      {
+        integrity: sha512-WQ8QsychjHyvlr+vCSTMbd2/yrBIZre5tRuM79eZi973BJz0CSEiFsNSGg5fvpnJuiHHawZ/8HWeir7nlatamQ==,
+      }
+    engines: { node: ">=16" }
+    cpu: [arm64]
+    os: [win32]
+
+  "@openai/codex@0.101.0-win32-x64":
+    resolution:
+      {
+        integrity: sha512-H+7h9x0fYrJRUZZHCA62Dzb/CS5Scl1sUw1aamfmHJzzorX+uTFOgGsibzqFpHTd6nRM4q8//fCdSxe5wUpOQQ==,
+      }
+    engines: { node: ">=16" }
+    cpu: [x64]
+    os: [win32]
+
+  "@taplo/core@0.2.0":
+    resolution:
+      {
+        integrity: sha512-r8bl54Zj1In3QLkiW/ex694bVzpPJ9EhwqT9xkcUVODnVUGirdB1JTsmiIv0o1uwqZiwhi8xNnTOQBRQCpizrQ==,
+      }
+
+  "@taplo/lib@0.5.0":
+    resolution:
+      {
+        integrity: sha512-+xIqpQXJco3T+VGaTTwmhxLa51qpkQxCjRwezjFZgr+l21ExlywJFcDfTrNmL6lG6tqb0h8GyJKO3UPGPtSCWg==,
+      }
+
+  prettier-plugin-toml@2.0.6:
+    resolution:
+      {
+        integrity: sha512-12N/wBuHa9jd/KVy9pRP20NMKxQfQLMseQCt66lIbLaPLItvGUcSIryE1eZZMJ7loSws6Ig3M2Elc2EreNh76w==,
+      }
+    engines: { node: ">=16.0.0" }
+    peerDependencies:
+      prettier: ^3.0.3
+
+  prettier@3.8.1:
+    resolution:
+      {
+        integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==,
+      }
+    engines: { node: ">=14" }
+    hasBin: true
+
+snapshots:
+  "@openai/codex@0.101.0":
+    optionalDependencies:
+      "@openai/codex-darwin-arm64": "@openai/codex@0.101.0-darwin-arm64"
+      "@openai/codex-darwin-x64": "@openai/codex@0.101.0-darwin-x64"
+      "@openai/codex-linux-arm64": "@openai/codex@0.101.0-linux-arm64"
+      "@openai/codex-linux-x64": "@openai/codex@0.101.0-linux-x64"
+      "@openai/codex-win32-arm64": "@openai/codex@0.101.0-win32-arm64"
+      "@openai/codex-win32-x64": "@openai/codex@0.101.0-win32-x64"
+
+  "@openai/codex@0.101.0-darwin-arm64":
+    optional: true
+
+  "@openai/codex@0.101.0-darwin-x64":
+    optional: true
+
+  "@openai/codex@0.101.0-linux-arm64":
+    optional: true
+
+  "@openai/codex@0.101.0-linux-x64":
+    optional: true
+
+  "@openai/codex@0.101.0-win32-arm64":
+    optional: true
+
+  "@openai/codex@0.101.0-win32-x64":
+    optional: true
+
+  "@taplo/core@0.2.0": {}
+
+  "@taplo/lib@0.5.0":
+    dependencies:
+      "@taplo/core": 0.2.0
+
+  prettier-plugin-toml@2.0.6(prettier@3.8.1):
+    dependencies:
+      "@taplo/lib": 0.5.0
+      prettier: 3.8.1
+
+  prettier@3.8.1: {}
