@@ -5,11 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Lean 4](https://img.shields.io/badge/Lean_4-v4.28.0-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyTDIgMjJoMjBMMTIgMnoiLz48L3N2Zz4=)](https://lean-lang.org/)
 
-[Paper]() | [Demo]() | [日本語](README.ja.md)
+[Paper]() | [Demo](https://lean-atlas-demo.vercel.app) | [日本語](README.ja.md)
 
 [Banri Yanahama](https://x.com/banr1_), [Akiyoshi Sannai](https://mlphys.scphys.kyoto-u.ac.jp/organization/member10/)
-
----
 
 <p align="center">
   <img src="assets/teaser.png" alt="Lean Atlas Web Viewer" width="720">
