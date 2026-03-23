@@ -2,33 +2,33 @@
 
 ## Project Overview
 
-lean-atlas は Lean 4 形式化プロジェクトの依存関係グラフとメタデータを可視化するツールチェーン。Lean 4 バックエンドが定理・定義の依存関係を解析し JSON を出力、Next.js フロントエンドがインタラクティブなグラフとして描画する。
+lean-atlas is a toolchain for visualizing dependency graphs and metadata of Lean 4 formalization projects. The Lean 4 backend analyzes dependencies between theorems and definitions and outputs JSON, which the Next.js frontend renders as an interactive graph.
 
 ## Development Commands
 
 ### Lean backend
 
 ```bash
-lake build                    # Lean プロジェクトのビルド
-lake exe atlas serve          # グラフデータ生成 + Web ビューア起動 (デフォルト)
-lake exe atlas deps           # 依存関係グラフを DOT 形式で出力
-lake exe atlas graph-data     # JSON グラフデータのエクスポート
+lake build                    # Build the Lean project
+lake exe atlas serve          # Generate graph data + launch web viewer (default)
+lake exe atlas deps           # Output dependency graph in DOT format
+lake exe atlas graph-data     # Export JSON graph data
 ```
 
 ### Frontend (web/)
 
 ```bash
-cd web && pnpm install        # 依存関係のインストール
-cd web && pnpm run dev        # 開発サーバー起動
-cd web && pnpm run build      # プロダクションビルド
-cd web && pnpm run lint       # ESLint 実行
-cd web && pnpm run build:full # ソースコピー + ビルド
+cd web && pnpm install        # Install dependencies
+cd web && pnpm run dev        # Start development server
+cd web && pnpm run build      # Production build
+cd web && pnpm run lint       # Run ESLint
+cd web && pnpm run build:full # Copy sources + build
 ```
 
 ### Root
 
 ```bash
-pnpm run format               # Prettier でフォーマット
+pnpm run format               # Format with Prettier
 ```
 
 ## Architecture
@@ -45,66 +45,66 @@ Lean 4 Backend (lake exe atlas graph-data)
 
 ```
 LeanAtlas/
-├── Metadata/           # メタデータシステム
-│   ├── Core.lean       # 型定義 (Confidence, ProofProgress, DefProgress, ConstantMeta)
-│   ├── Attribute/      # 各属性の永続化 (persistent environment extension)
+├── Metadata/           # Metadata system
+│   ├── Core.lean       # Type definitions (Confidence, ProofProgress, DefProgress, ConstantMeta)
+│   ├── Attribute/      # Persistence for each attribute (persistent environment extension)
 │   │   ├── Confidence.lean
 │   │   ├── ProofProgress.lean
 │   │   ├── DefProgress.lean
 │   │   └── Meta.lean
-│   ├── Extensions.lean # メタデータ集約 API (getConstantMeta, hasMetadata, hasSorry)
-│   └── Linter.lean     # メタデータ関連 linter
-├── Config/             # TOML 設定ファイルの読み込み (lean-atlas.toml)
+│   ├── Extensions.lean # Metadata aggregation API (getConstantMeta, hasMetadata, hasSorry)
+│   └── Linter.lean     # Metadata-related linter
+├── Config/             # TOML config file loading (lean-atlas.toml)
 │   ├── Types.lean
 │   ├── Parse.lean
 │   └── Load.lean
-├── Deps/               # 依存関係解析
-│   ├── Core.lean       # 直接/推移的依存関係の計算、type/value の区別
-│   ├── Dot.lean        # DOT 形式出力
+├── Deps/               # Dependency analysis
+│   ├── Core.lean       # Direct/transitive dependency computation, type/value distinction
+│   ├── Dot.lean        # DOT format output
 │   └── Main.lean
-├── GraphData/          # JSON エクスポート
+├── GraphData/          # JSON export
 │   ├── Core.lean
 │   ├── Json.lean
 │   └── Main.lean
-└── CLI/                # CLI エントリーポイント
-    ├── Main.lean       # サブコマンドルーティング (serve/deps/graph-data)
-    └── Serve.lean      # Web サーバー起動
+└── CLI/                # CLI entry point
+    ├── Main.lean       # Subcommand routing (serve/deps/graph-data)
+    └── Serve.lean      # Web server startup
 ```
 
 ### Frontend Structure (web/)
 
-- **React Flow + Dagre** によるインタラクティブグラフ可視化
-- **Composable filtering**: `useGraphFilters` hook で 12+ のフィルタ次元を独立に合成
-- **Hooks ベース**: `useGraphData`, `useLayoutManager`, `useNodeHighlight` 等の独立 hook
-- **i18n**: 日英対応 (`lib/i18n/`)
-- **npm パッケージ**: `src/AtlasViewer.tsx` を外部向け API としてエクスポート
+- **React Flow + Dagre** for interactive graph visualization
+- **Composable filtering**: `useGraphFilters` hook independently composes 12+ filter dimensions
+- **Hooks-based**: Independent hooks such as `useGraphData`, `useLayoutManager`, `useNodeHighlight`
+- **i18n**: Japanese and English support (`lib/i18n/`)
+- **npm package**: Exports `src/AtlasViewer.tsx` as the public-facing API
 
 ## Key Design Patterns
 
 ### Metadata: 3 Independent Axes
 
-- **Confidence**: `perfect` / `high` / `medium` / `low` — 命題の信頼度
-- **ProofProgress**: `complete` / `mostly` / `partially` / `stub` — 証明の完成度
-- **DefProgress**: `complete` / `partially` — 定義の完成度
+- **Confidence**: `perfect` / `high` / `medium` / `low` — confidence level of a proposition
+- **ProofProgress**: `complete` / `mostly` / `partially` / `stub` — proof completion status
+- **DefProgress**: `complete` / `partially` — definition completion status
 
-これらは独立に管理される。例: confidence=high だが proof=stub (信頼できる命題だがまだ証明未完了) という状態が有効。
+These are managed independently. For example, confidence=high with proof=stub (a trustworthy proposition whose proof is not yet complete) is a valid state.
 
 ### Dependency Analysis: type vs value
 
-- **typeOnly**: 型（命題の statement）にのみ使用される依存
-- **valueOnly**: 値（proof / implementation）にのみ使用される依存
+- **typeOnly**: Dependencies used only in types (proposition statements)
+- **valueOnly**: Dependencies used only in values (proofs / implementations)
 
 ### Persistent Environment Extension
 
-各メタデータ属性は Lean の persistent environment extension として保存される。`Metadata/Extensions.lean` が集約 API を提供。
+Each metadata attribute is stored as a Lean persistent environment extension. `Metadata/Extensions.lean` provides the aggregation API.
 
 ### Auto-generated Name Filtering
 
-Lean コンパイラが生成する内部名 (`_private`, `match_` 等) を検出・フィルタリングし、ユーザー定義の定数のみを表示対象にする。
+Detects and filters out compiler-generated internal names (`_private`, `match_`, etc.), showing only user-defined constants.
 
 ### Frontend Composable Filtering
 
-`useGraphFilters` hook が全フィルタ状態を管理し、各フィルタは独立にトグル可能。AND 合成で組み合わせて適用される。`alwaysShowMainTheorems` フラグでメイン定理はフィルタをバイパスできる。
+The `useGraphFilters` hook manages all filter state, and each filter can be toggled independently. Filters are combined using AND composition. The `alwaysShowMainTheorems` flag allows main theorems to bypass filters.
 
 ## Configuration
 

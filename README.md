@@ -81,6 +81,7 @@ theorem my_main_theorem : ... := by ...
 ```
 
 **How to choose main theorems:**
+
 - The final results of your formalization project (e.g., the theorem stated in a paper)
 - Any theorem whose semantic correctness you want to verify
 
@@ -95,6 +96,7 @@ lake exe atlas
 ```
 
 This will:
+
 1. Generate the dependency graph as JSON
 2. Install web dependencies (if needed)
 3. Start the interactive viewer at `http://localhost:5326`
@@ -184,14 +186,14 @@ Lean Compass exploits a key asymmetry: value dependencies from a **theorem's pro
 
 Evaluated on six Lean 4 projects with different structural characteristics:
 
-| Project | Type | Avg. Reduction |
-|---------|------|---------------:|
-| PrimeNumberTheoremAnd | proof-heavy | 99.5% |
-| Carleson | proof-heavy | 96.2% |
-| Brownian Motion | proof-heavy | 94.4% |
-| PhysLib | mixed (physics) | 69.0% |
-| FLT (6 milestones) | mixed | 59.8% |
-| XMSS Encoding Scheme | definition-heavy (crypto) | 27.3% |
+| Project               | Type                      | Avg. Reduction |
+| --------------------- | ------------------------- | -------------: |
+| PrimeNumberTheoremAnd | proof-heavy               |          99.5% |
+| Carleson              | proof-heavy               |          96.2% |
+| Brownian Motion       | proof-heavy               |          94.4% |
+| PhysLib               | mixed (physics)           |          69.0% |
+| FLT (6 milestones)    | mixed                     |          59.8% |
+| XMSS Encoding Scheme  | definition-heavy (crypto) |          27.3% |
 
 The best predictor of reduction is the **theorem/definition ratio** inside a review cone, not the project label or size. Proof-heavy cones achieve >90% reduction; definition-heavy cones retain more nodes because definitions contribute directly to statement semantics.
 

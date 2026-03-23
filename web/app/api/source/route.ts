@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import { isAbsolute, relative, resolve } from "path";
 
-// LEAN_PROJECT_ROOT が設定されていればそのパスを、未設定なら親ディレクトリを使用
+// Use LEAN_PROJECT_ROOT if set, otherwise fall back to the parent directory
 const PROJECT_ROOT = process.env.LEAN_PROJECT_ROOT
   ? resolve(process.env.LEAN_PROJECT_ROOT)
   : resolve(process.cwd(), "..");
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // .lean 拡張子のみ許可
+  // Only allow .lean file extension
   if (!filePath.endsWith(".lean")) {
     return NextResponse.json(
       { error: "Only .lean files are allowed" },
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // パストラバーサル防止
+  // Prevent path traversal attacks
   const absolutePath = resolve(PROJECT_ROOT, filePath);
   if (!isPathInside(ALLOWED_PREFIX, absolutePath)) {
     return NextResponse.json({ error: "Path not allowed" }, { status: 403 });

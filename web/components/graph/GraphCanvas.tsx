@@ -9,12 +9,13 @@ import {
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
-  useNodesInitialized,
+  useStoreApi,
   Background,
   Controls,
   // MiniMap,
   useNodesState,
   useEdgesState,
+  getViewportForBounds,
   type NodeChange,
   type NodeMouseHandler,
 } from "@xyflow/react";
@@ -32,7 +33,10 @@ import { useTheme } from "@/components/ThemeProvider";
 import { extractDirectories } from "@/lib/filters";
 import { buildDisplayNodes, buildDisplayEdges } from "@/lib/graphBuilder";
 import type { CustomNodeData } from "@/lib/types";
-import { getReachableByEdgeFilter, getTransitiveDependencies } from "@/lib/dependencies";
+import {
+  getReachableByEdgeFilter,
+  getTransitiveDependencies,
+} from "@/lib/dependencies";
 import { calculateLineBoundaries } from "@/lib/lineSize";
 import { calculateNodeStats, calculateFilterCounts } from "@/lib/statistics";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
@@ -45,8 +49,8 @@ const nodeTypes = {
 function GraphCanvasInner() {
   const { t } = useTranslation();
   const { data, loading, error, nodesWithDependents, reload } = useGraphData();
-  const { fitView } = useReactFlow();
-  const nodesInitialized = useNodesInitialized();
+  const { getNodesBounds, setViewport } = useReactFlow();
+  const store = useStoreApi();
   const [selectedNode, setSelectedNode] = useState<CustomNodeData | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFilterMinimized, setIsFilterMinimized] = useState(false);
@@ -67,7 +71,7 @@ function GraphCanvasInner() {
     requestedFitViewIdRef.current += 1;
   }, []);
 
-  // 検証承認
+  // Review approval
   const {
     approveConfidence,
     isSubmitting: isApproving,
@@ -78,7 +82,7 @@ function GraphCanvasInner() {
     async (nodeId: string, filePath: string, lineStart: number) => {
       const success = await approveConfidence({ nodeId, filePath, lineStart });
       if (success) {
-        // 楽観的に selectedNode を更新
+        // Optimistically update selectedNode
         setSelectedNode((prev) => {
           if (!prev || prev.id !== nodeId) return prev;
           return {
@@ -93,14 +97,14 @@ function GraphCanvasInner() {
     [approveConfidence, reload],
   );
 
-  // ハイライト管理
+  // Highlight management
   const { highlightedNodeIds, computeHighlight, clearHighlight } =
     useNodeHighlight();
 
-  // ビューポートナビゲーション
+  // Viewport navigation
   const { halfFocusOnNode } = useViewportNavigation();
 
-  // キーボードショートカット
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
@@ -123,7 +127,7 @@ function GraphCanvasInner() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // ディレクトリリストを計算
+  // Compute directory list
   const directories = useMemo(() => {
     if (!data) return [];
     return extractDirectories(data.nodes.map((n) => n.filePath));
@@ -155,12 +159,12 @@ function GraphCanvasInner() {
     setTypeReachableOnly,
   } = useGraphFilters(directories);
 
-  // 行数フィルターの境界を計算
+  // Compute line count filter boundaries
   const lineBoundaries = useMemo(() => {
     return calculateLineBoundaries(Array.from(nodesWithDependents.values()));
   }, [nodesWithDependents]);
 
-  // 主要定理リストを計算（ソート済み）
+  // Compute main theorem list (sorted)
   const mainTheorems = useMemo(() => {
     return Array.from(nodesWithDependents.values())
       .filter((n) => n.meta.isMainTheorem)
@@ -183,7 +187,7 @@ function GraphCanvasInner() {
       });
   }, [nodesWithDependents]);
 
-  // 初回マウント時に設定に基づいて初期選択
+  // Initialize selection based on settings on first mount
   useEffect(() => {
     if (mainTheorems.length > 0 && !hasInitializedMainTheorem.current) {
       hasInitializedMainTheorem.current = true;
@@ -204,14 +208,14 @@ function GraphCanvasInner() {
     }
   }, [mainTheorems, settings.defaultMainTheorem, setMainTheoremSink]);
 
-  // 人間検証対象ノードID（常に計算 — 色分けに使用）
+  // Human review target node IDs (always computed -- used for color coding)
   const verificationTargetIds = useMemo(() => {
     if (!data) return null;
 
     let mainTheoremIds: string[];
 
     if (filters.mainTheoremSink) {
-      // Sink 連動: sink の全依存グラフ内の mainTheorem を発見
+      // Sink-linked: find mainTheorems within the sink's entire dependency graph
       const sinkDeps = getTransitiveDependencies(
         filters.mainTheoremSink,
         nodesWithDependents,
@@ -220,7 +224,7 @@ function GraphCanvasInner() {
         .filter((n) => n.meta.isMainTheorem && sinkDeps.has(n.id))
         .map((n) => n.id);
     } else {
-      // Sink 未選択: 全 mainTheorem（現行動作）
+      // No sink selected: all mainTheorems (current behavior)
       mainTheoremIds = Array.from(nodesWithDependents.values())
         .filter((n) => n.meta.isMainTheorem)
         .map((n) => n.id);
@@ -229,17 +233,19 @@ function GraphCanvasInner() {
     if (mainTheoremIds.length === 0) return null;
 
     return getReachableByEdgeFilter(mainTheoremIds, data.edges, (edge) => {
-      return edge.kind !== "theorem_value_to_definition"
-          && edge.kind !== "theorem_value_to_theorem";
+      return (
+        edge.kind !== "theorem_value_to_definition" &&
+        edge.kind !== "theorem_value_to_theorem"
+      );
     });
   }, [data, nodesWithDependents, filters.mainTheoremSink]);
 
-  // フィルター用（チェックが入っている場合のみ非対象を非表示にする）
+  // For filtering (hide non-targets only when the checkbox is checked)
   const typeReachableNodeIds = filters.typeReachableOnly
     ? verificationTargetIds
     : null;
 
-  // フィルター適用後のノード
+  // Nodes after filter application
   const filteredNodes = useMemo(() => {
     let nodes = filterNodes(nodesWithDependents, lineBoundaries);
     if (typeReachableNodeIds) {
@@ -250,12 +256,12 @@ function GraphCanvasInner() {
     return nodes;
   }, [filterNodes, nodesWithDependents, lineBoundaries, typeReachableNodeIds]);
 
-  // フィルター済みノードIDセット
+  // Set of filtered node IDs
   const filteredNodeIds = useMemo(() => {
     return new Set(filteredNodes.map((n) => n.id));
   }, [filteredNodes]);
 
-  // レイアウト管理フック
+  // Layout manager hook
   const { nodePositions, updatePositions } = useLayoutManager({
     data,
     nodesWithDependents,
@@ -264,7 +270,7 @@ function GraphCanvasInner() {
     requestFitView,
   });
 
-  // フィルター適用（座標は維持、hidden で切り替え）
+  // Apply filters (preserve coordinates, toggle via hidden)
   const { displayNodes, displayEdges } = useMemo(() => {
     if (!data) return { displayNodes: [], displayEdges: [] };
 
@@ -304,7 +310,7 @@ function GraphCanvasInner() {
   const [nodes, setNodes, onNodesChangeBase] = useNodesState(displayNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(displayEdges);
 
-  // 再レイアウト処理
+  // Re-layout processing
   const { handleRelayout } = useRelayout({
     filteredNodes,
     filteredNodeIds,
@@ -318,7 +324,7 @@ function GraphCanvasInner() {
     requestFitView,
   });
 
-  // ドラッグ完了時に座標を nodePositions に保存
+  // Save coordinates to nodePositions when drag completes
   const handleNodesChange = useCallback(
     (changes: NodeChange<(typeof displayNodes)[number]>[]) => {
       onNodesChangeBase(changes);
@@ -338,7 +344,7 @@ function GraphCanvasInner() {
     [onNodesChangeBase, nodePositions, updatePositions],
   );
 
-  // displayNodes/displayEdges が変わったら更新
+  // Update when displayNodes/displayEdges change
   useEffect(() => {
     setNodes(displayNodes);
     setEdges(displayEdges);
@@ -352,29 +358,53 @@ function GraphCanvasInner() {
   useEffect(() => {
     if (
       queuedFitViewId === 0 ||
-      queuedFitViewId === completedFitViewIdRef.current ||
-      !nodesInitialized ||
-      nodes.length === 0
+      queuedFitViewId === completedFitViewIdRef.current
     ) {
       return;
     }
 
+    // `fitView()` relies on React Flow's measured node sizes and skips
+    // unmeasured nodes right after relayout, producing non-deterministic bounds.
+    // Instead, compute bounds manually — `getNodesBounds` falls back to the
+    // explicit `width`/`height` set by `buildDisplayNodes` when `measured` is
+    // absent, so the result is always complete.
+    // (`useNodesInitialized` was also removed because it stays `true` after the
+    // first render and therefore provides no protection for subsequent relayouts.)
+    //
+    // NOTE: We read nodes from the store inside the RAF rather than depending
+    // on `nodes` from `useNodesState`. This avoids a cancellation loop where
+    // `setNodes()` in the displayNodes effect causes `nodes` to get a new
+    // reference, re-triggering this effect and canceling the pending RAF.
     const rafId = window.requestAnimationFrame(() => {
+      const { width, height, minZoom, nodeLookup } = store.getState();
+      if (width <= 0 || height <= 0 || nodeLookup.size === 0) {
+        return;
+      }
+
+      const bounds = getNodesBounds(Array.from(nodeLookup.values()));
       completedFitViewIdRef.current = queuedFitViewId;
-      void fitView({ padding: 0.1, duration: 200, maxZoom: 1 });
+      const viewport = getViewportForBounds(
+        bounds,
+        width,
+        height,
+        minZoom,
+        1,
+        0.1,
+      );
+      void setViewport(viewport, { duration: 200 });
     });
 
     return () => window.cancelAnimationFrame(rafId);
-  }, [queuedFitViewId, nodes, nodesInitialized, fitView]);
+  }, [queuedFitViewId, getNodesBounds, setViewport, store]);
 
-  // パンクリックハンドラ
+  // Pane click handler
   const onPaneClick = useCallback(() => {
     setSelectedNode(null);
     setIsSettingsOpen(false);
     clearHighlight();
   }, [clearHighlight]);
 
-  // ノードクリックハンドラ
+  // Node click handler
   const onNodeClick: NodeMouseHandler = useCallback(
     (_event, node) => {
       const nodeData = nodesWithDependents.get(node.id);
@@ -394,7 +424,7 @@ function GraphCanvasInner() {
     [nodesWithDependents, computeHighlight, filteredNodeIds, halfFocusOnNode],
   );
 
-  // 詳細パネルからノードクリック
+  // Node click from detail panel
   const handleNodeClickFromDetail = useCallback(
     (nodeId: string) => {
       const nodeData = nodesWithDependents.get(nodeId);
@@ -419,7 +449,7 @@ function GraphCanvasInner() {
     ],
   );
 
-  // 統計情報
+  // Statistics
   const statistics = useMemo(
     () => ({
       total: nodesWithDependents.size,
@@ -443,7 +473,10 @@ function GraphCanvasInner() {
 
   if (loading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+      <div
+        className="w-full h-screen flex items-center justify-center"
+        style={{ backgroundColor: "var(--background)" }}
+      >
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent)] mx-auto mb-4"></div>
           <p className="text-[var(--panel-text-muted)]">
@@ -456,7 +489,10 @@ function GraphCanvasInner() {
 
   if (error) {
     return (
-      <div className="w-full h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+      <div
+        className="w-full h-screen flex items-center justify-center"
+        style={{ backgroundColor: "var(--background)" }}
+      >
         <div className="text-center max-w-md">
           <div className="text-red-500 text-5xl mb-4">!</div>
           <h2 className="text-xl font-semibold text-[var(--panel-text)] mb-2">
@@ -496,7 +532,10 @@ function GraphCanvasInner() {
           type: "default",
         }}
       >
-        <Background color={resolvedTheme === "dark" ? "#1a1a2e" : "#e8dcc8"} gap={16} />
+        <Background
+          color={resolvedTheme === "dark" ? "#1a1a2e" : "#e8dcc8"}
+          gap={16}
+        />
         <Controls />
         {/* <MiniMap
           nodeColor={getMinimapNodeColor}
@@ -512,7 +551,7 @@ function GraphCanvasInner() {
         />
       </ReactFlow>
 
-      {/* 左側パネルコンテナ */}
+      {/* Left side panel container */}
       <div className="absolute left-4 top-4 z-50 flex flex-col gap-4">
         <GraphFilters
           filters={filters}

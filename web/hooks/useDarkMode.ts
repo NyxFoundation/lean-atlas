@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 
 /**
- * ダークモード検出フック
- * document.documentElement の class を監視して dark クラスの有無を返す
+ * Dark mode detection hook.
+ * Observes the class attribute of document.documentElement and returns whether the "dark" class is present.
  */
 export function useDarkMode(): boolean {
   const [isDark, setIsDark] = useState(false);

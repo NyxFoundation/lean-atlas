@@ -35,7 +35,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     [theme, systemTheme],
   );
 
-  // システムテーマの変更を監視
+  // Watch for system theme changes
   useEffect(() => {
     if (theme !== "system") return;
 
@@ -48,7 +48,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return () => mediaQuery.removeEventListener("change", handler);
   }, [theme]);
 
-  // html 要素にクラスを付与
+  // Apply class to the html element
   useEffect(() => {
     document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
   }, [resolvedTheme]);

@@ -18,7 +18,7 @@ export const INACTIVE_STYLE =
   "bg-[var(--filter-inactive-bg)] border-[var(--filter-inactive-border)] text-[var(--filter-inactive-text)]";
 
 /**
- * トグル可能なボタングループ
+ * Toggleable button group
  */
 export function ToggleButtonGroup({
   options,

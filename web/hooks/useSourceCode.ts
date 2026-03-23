@@ -22,7 +22,7 @@ interface UseSourceCodeResult {
 }
 
 /**
- * ソースコード表示状態を管理するフック
+ * Hook that manages source code display state
  */
 export function useSourceCode(
   options: UseSourceCodeOptions,
@@ -38,7 +38,7 @@ export function useSourceCode(
     initialNonCommentLines,
   );
 
-  // ソースコード読み込み
+  // Load source code
   const loadSourceCode = useCallback(async () => {
     if (lineStart === null || lineEnd === null) return;
 
@@ -56,14 +56,14 @@ export function useSourceCode(
       setNonCommentLines(result.nonCommentLines);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "ソースコードの読み込みに失敗",
+        err instanceof Error ? err.message : "Failed to load source code",
       );
     } finally {
       setIsLoading(false);
     }
   }, [filePath, lineStart, lineEnd, isDark]);
 
-  // 実装を見る/閉じるのトグル
+  // Toggle show/hide implementation
   const toggleCode = useCallback(() => {
     if (!isCodeExpanded) {
       setIsCodeExpanded(true);
@@ -73,14 +73,14 @@ export function useSourceCode(
     }
   }, [isCodeExpanded, loadSourceCode]);
 
-  // ダークモード切替時にソースコードを再読み込み
+  // Reload source code when dark mode is toggled
   useEffect(() => {
     if (isCodeExpanded && sourceCode) {
       loadSourceCode();
     }
   }, [isDark, isCodeExpanded, loadSourceCode, sourceCode]);
 
-  // リセット関数（ノード変更時に呼び出し）
+  // Reset function (called when the selected node changes)
   const reset = useCallback(() => {
     setIsCodeExpanded(false);
     setSourceCode(null);

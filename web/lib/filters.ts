@@ -1,5 +1,5 @@
 /**
- * ファイルパスからディレクトリ一覧を抽出
+ * Extract a list of directories from file paths
  */
 export function extractDirectories(filePaths: string[]): string[] {
   const dirs = new Set<string>();

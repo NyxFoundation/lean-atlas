@@ -25,7 +25,7 @@ export function useSettings(): UseSettingsResult {
   );
   const hasMountedRef = useRef(false);
 
-  // 設定変更時に localStorage に保存
+  // Save to localStorage when settings change
   useEffect(() => {
     if (!hasMountedRef.current) {
       hasMountedRef.current = true;

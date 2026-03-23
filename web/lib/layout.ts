@@ -2,15 +2,19 @@ import dagre from "dagre";
 import type { Node, Edge } from "@xyflow/react";
 import type { CustomNodeData } from "./types";
 import type { LayoutDirection } from "./settings";
-import { calculateNodeDiameter, getNodeDegree, NODE_SIZE_CONFIG } from "./lineSize";
+import {
+  calculateNodeDiameter,
+  getNodeDegree,
+  NODE_SIZE_CONFIG,
+} from "./lineSize";
 
 export const sinkNodeWidth = NODE_SIZE_CONFIG.sinkDiameter;
 export const sinkNodeHeight = NODE_SIZE_CONFIG.sinkDiameter;
 
-/** ジッターの最大振幅（px）。各軸で ±JITTER_AMOUNT/2 の範囲 */
+/** Maximum jitter amplitude (px). Each axis ranges within +/-JITTER_AMOUNT/2 */
 const JITTER_AMOUNT = 60;
 
-/** 文字列 → 32bit ハッシュ (FNV-1a) */
+/** String to 32-bit hash (FNV-1a) */
 function hashString(s: string): number {
   let h = 0x811c9dc5;
   for (let i = 0; i < s.length; i++) {
@@ -20,7 +24,7 @@ function hashString(s: string): number {
   return h >>> 0;
 }
 
-/** 整数シード → [0, 1) の擬似乱数 */
+/** Integer seed to pseudo-random number in [0, 1) */
 function seededRandom(seed: number): number {
   let t = (seed + 0x6d2b79f5) | 0;
   t = Math.imul(t ^ (t >>> 15), t | 1);
@@ -71,7 +75,7 @@ export function getLayoutedElements(
     const targetPosition = direction === "BT" ? "bottom" : "top";
     const sourcePosition = direction === "BT" ? "top" : "bottom";
 
-    // sink ノード以外に決定論的ジッターを適用
+    // Apply deterministic jitter to non-sink nodes
     let jitterX = 0;
     let jitterY = 0;
     if (!isSink) {
@@ -97,11 +101,11 @@ export function getLayoutedElements(
 }
 
 /**
- * 主要定理のx座標を依存先ノード群の中央に配置
- * @param nodes - レイアウト済みノード配列
- * @param mainTheoremId - 主要定理のノードID
- * @param dependencyIds - 主要定理の依存先ノードID（推移的依存、主要定理自身を含む）
- * @returns 主要定理のx座標が調整されたノード配列
+ * Center the main theorem's x-coordinate among its dependency nodes
+ * @param nodes - laid-out node array
+ * @param mainTheoremId - node ID of the main theorem
+ * @param dependencyIds - dependency node IDs of the main theorem (transitive dependencies, including the main theorem itself)
+ * @returns node array with the main theorem's x-coordinate adjusted
  */
 export function centerMainTheoremNode(
   nodes: Node<CustomNodeData>[],
@@ -111,22 +115,22 @@ export function centerMainTheoremNode(
   const mainTheoremNode = nodes.find((n) => n.id === mainTheoremId);
   if (!mainTheoremNode) return nodes;
 
-  // 依存先ノード（主要定理自身を除く）のx座標を収集
+  // Collect x-coordinates of dependency nodes (excluding the main theorem itself)
   const depNodes = nodes.filter(
     (n) => dependencyIds.has(n.id) && n.id !== mainTheoremId,
   );
 
   if (depNodes.length === 0) return nodes;
 
-  // 左端と右端のx座標を計算
+  // Calculate leftmost and rightmost x-coordinates
   const xCoords = depNodes.map((n) => n.position.x);
   const minX = Math.min(...xCoords);
   const maxX = Math.max(...xCoords);
 
-  // 中央のx座標を計算
+  // Calculate the center x-coordinate
   const centerX = (minX + maxX) / 2;
 
-  // 主要定理のx座標を更新
+  // Update the main theorem's x-coordinate
   return nodes.map((node) => {
     if (node.id === mainTheoremId) {
       return {
@@ -139,16 +143,16 @@ export function centerMainTheoremNode(
 }
 
 /**
- * ノード座標をビューポートのアスペクト比に合わせてスケーリング
- * dagre レイアウトは正方形に近い配置を生成するため、
- * ワイドスクリーンでは fitView 後にホワイトスペースが生じる。
- * この関数は短い軸を伸張してビューポートを有効活用する。
+ * Scale node coordinates to match the viewport's aspect ratio.
+ * Since dagre layout produces a nearly square arrangement,
+ * widescreen displays end up with whitespace after fitView.
+ * This function stretches the shorter axis to make better use of the viewport.
  *
- * @param nodes - レイアウト済みノード配列
- * @param viewportWidth - ビューポートの幅（px）
- * @param viewportHeight - ビューポートの高さ（px）
- * @param maxScale - 最大スケーリング係数（デフォルト 3.0）
- * @returns スケーリングされたノード配列
+ * @param nodes - laid-out node array
+ * @param viewportWidth - viewport width (px)
+ * @param viewportHeight - viewport height (px)
+ * @param maxScale - maximum scaling factor (default 3.0)
+ * @returns scaled node array
  */
 export function scaleToViewportAspectRatio(
   nodes: Node<CustomNodeData>[],
@@ -158,7 +162,7 @@ export function scaleToViewportAspectRatio(
 ): Node<CustomNodeData>[] {
   if (nodes.length <= 1) return nodes;
 
-  // バウンディングボックスを算出（ノードサイズを含む）
+  // Calculate bounding box (including node sizes)
   let minX = Infinity;
   let maxX = -Infinity;
   let minY = Infinity;
@@ -181,8 +185,12 @@ export function scaleToViewportAspectRatio(
   const graphWidth = maxX - minX;
   const graphHeight = maxY - minY;
 
-  // 幅または高さが最小ノード以下ならスキップ
-  if (graphWidth <= NODE_SIZE_CONFIG.minDiameter || graphHeight <= NODE_SIZE_CONFIG.minDiameter) return nodes;
+  // Skip if width or height is less than or equal to the minimum node size
+  if (
+    graphWidth <= NODE_SIZE_CONFIG.minDiameter ||
+    graphHeight <= NODE_SIZE_CONFIG.minDiameter
+  )
+    return nodes;
 
   const currentAR = graphWidth / graphHeight;
   const targetAR = viewportWidth / viewportHeight;
@@ -191,19 +199,19 @@ export function scaleToViewportAspectRatio(
   let scaleY = 1.0;
 
   if (currentAR < targetAR) {
-    // 縦長 → X方向を伸張
+    // Portrait orientation: stretch in the X direction
     scaleX = Math.min(targetAR / currentAR, maxScale);
   } else if (currentAR > targetAR) {
-    // 横長 → Y方向を伸張
+    // Landscape orientation: stretch in the Y direction
     scaleY = Math.min(currentAR / targetAR, maxScale);
   }
 
-  // スケーリング係数が 1.0 ± 0.05 以内なら不要
+  // No scaling needed if the factor is within 1.0 +/- 0.05
   if (Math.abs(scaleX - 1.0) < 0.05 && Math.abs(scaleY - 1.0) < 0.05) {
     return nodes;
   }
 
-  // バウンディングボックスの中心を基準にスケーリング
+  // Scale relative to the center of the bounding box
   const centerX = (minX + maxX) / 2;
   const centerY = (minY + maxY) / 2;
 

@@ -6,7 +6,7 @@ interface FilterSectionProps {
 }
 
 /**
- * フィルターセクションのラベル付きラッパー
+ * Labeled wrapper for a filter section
  */
 export function FilterSection({ label, children }: FilterSectionProps) {
   return (

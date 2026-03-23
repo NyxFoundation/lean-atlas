@@ -28,7 +28,7 @@ export function StatisticsPanel({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
-  // 割合計算
+  // Percentage calculations
   const highOrAbovePercent =
     stats.nodes > 0
       ? (
@@ -50,12 +50,12 @@ export function StatisticsPanel({
       position="top-center"
       className="atlas-panel transition-all duration-200 overflow-hidden"
     >
-      {/* 1行目: メイン統計バー（クリック可能） */}
+      {/* Row 1: Main statistics bar (clickable) */}
       <div
         className="flex items-center gap-4 text-sm px-4 py-2 cursor-pointer select-none hover:bg-orange-50/40 dark:hover:bg-purple-900/20"
         onClick={() => setExpanded(!expanded)}
       >
-        {/* 主要定理セレクター */}
+        {/* Main theorem selector */}
         {mainTheorems.length > 0 && (
           <>
             <select
@@ -99,7 +99,7 @@ export function StatisticsPanel({
           {t.stats.axioms}
         </span>
         <span className="text-[var(--divider)]">|</span>
-        {/* 確信度レベル */}
+        {/* Confidence levels */}
         <span className="text-[var(--panel-text-muted)]">
           <span className="font-medium text-[var(--panel-text)]">
             {stats.confidencePerfect}
@@ -124,13 +124,13 @@ export function StatisticsPanel({
           </span>{" "}
           {t.confidenceLevels.low}
         </span>
-        {/* 展開インジケータ */}
+        {/* Expand indicator */}
         <span className="text-[var(--panel-text-muted)] text-xs ml-auto">
           {expanded ? "▲" : "▼"}
         </span>
       </div>
 
-      {/* 2行目: 割合情報（展開時のみ） */}
+      {/* Row 2: Percentage information (visible when expanded) */}
       <div
         className={`overflow-hidden transition-all duration-200 ${
           expanded ? "max-h-12 opacity-100" : "max-h-0 opacity-0"

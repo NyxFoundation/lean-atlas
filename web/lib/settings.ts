@@ -1,8 +1,8 @@
-// 設定用の型定義
+// Type definitions for settings
 
-export type LayoutDirection = "TB" | "BT"; // 依存先が上 / 依存元が上
+export type LayoutDirection = "TB" | "BT"; // dependencies on top / dependents on top
 export type ThemeMode = "light" | "dark" | "system";
-// "random": ランダムな主要定理, 文字列: 特定の定理ID
+// "random": random main theorem, string: specific theorem ID
 export type DefaultMainTheoremMode = "random" | string;
 
 export interface Settings {

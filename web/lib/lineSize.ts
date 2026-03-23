@@ -1,25 +1,24 @@
 import type { NodeData, CustomNodeData, LineSizeCategory } from "./types";
 
 export const NODE_SIZE_CONFIG = {
-  defaultDiameter: 120, // 次数0の場合
+  defaultDiameter: 120, // when degree is 0
   minDiameter: 50,
   maxDiameter: 1200,
-  maxDegree: 50, // これ以上はクランプ
+  maxDegree: 50, // clamped above this value
   sinkDiameter: 1500,
 } as const;
 
-/** ノードの次数（入エッジ数 + 出エッジ数）を取得 */
+/** Get the degree of a node (number of incoming edges + number of outgoing edges) */
 export function getNodeDegree(node: CustomNodeData): number {
   return node.dependencies.length + node.dependents.length;
 }
 
-/** 次数から円ノードの直径(px)を計算（pow(0.3) スケーリング） */
+/** Calculate circular node diameter (px) from degree (pow(0.3) scaling) */
 export function calculateNodeDiameter(degree: number): number {
   if (degree <= 0) return NODE_SIZE_CONFIG.defaultDiameter;
   const { minDiameter, maxDiameter, maxDegree } = NODE_SIZE_CONFIG;
   const clamped = Math.min(degree, maxDegree);
-  const t =
-    (Math.pow(clamped, 0.3) - 1) / (Math.pow(maxDegree, 0.3) - 1);
+  const t = (Math.pow(clamped, 0.3) - 1) / (Math.pow(maxDegree, 0.3) - 1);
   return Math.round(minDiameter + (maxDiameter - minDiameter) * t);
 }
 
@@ -30,8 +29,11 @@ export interface NodeTextSizes {
   badgeGap: string;
 }
 
-/** 直径に応じたテキストサイズクラスを返す */
-export function getNodeTextSizes(diameter: number, isSink: boolean): NodeTextSizes {
+/** Return text size classes based on diameter */
+export function getNodeTextSizes(
+  diameter: number,
+  isSink: boolean,
+): NodeTextSizes {
   if (isSink) {
     return {
       nameTextSize: "text-[128px]",
@@ -40,32 +42,78 @@ export function getNodeTextSizes(diameter: number, isSink: boolean): NodeTextSiz
       badgeGap: "gap-10 mt-10",
     };
   }
-  const nameTextSize = diameter > 1000 ? "text-9xl" : diameter > 800 ? "text-8xl" : diameter > 600 ? "text-7xl" : diameter > 400 ? "text-6xl" : diameter > 250 ? "text-5xl" : diameter > 150 ? "text-3xl" : diameter > 100 ? "text-xl" : "text-lg";
-  const subTextSize = diameter > 1000 ? "text-6xl" : diameter > 800 ? "text-5xl" : diameter > 600 ? "text-4xl" : diameter > 400 ? "text-3xl" : diameter > 250 ? "text-xl" : diameter > 150 ? "text-lg" : "text-base";
-  const badgeTextSize = diameter > 1000 ? "text-4xl px-8 py-3" : diameter > 800 ? "text-3xl px-7 py-2.5" : diameter > 600 ? "text-2xl px-6 py-2" : diameter > 400 ? "text-xl px-5 py-1.5" : diameter > 250 ? "text-lg px-4 py-1" : "text-sm px-2 py-0.5";
-  const badgeGap = diameter > 800 ? "gap-7 mt-7" : diameter > 500 ? "gap-4 mt-4" : diameter > 300 ? "gap-3 mt-3" : "gap-1.5 mt-1.5";
+  const nameTextSize =
+    diameter > 1000
+      ? "text-9xl"
+      : diameter > 800
+        ? "text-8xl"
+        : diameter > 600
+          ? "text-7xl"
+          : diameter > 400
+            ? "text-6xl"
+            : diameter > 250
+              ? "text-5xl"
+              : diameter > 150
+                ? "text-3xl"
+                : diameter > 100
+                  ? "text-xl"
+                  : "text-lg";
+  const subTextSize =
+    diameter > 1000
+      ? "text-6xl"
+      : diameter > 800
+        ? "text-5xl"
+        : diameter > 600
+          ? "text-4xl"
+          : diameter > 400
+            ? "text-3xl"
+            : diameter > 250
+              ? "text-xl"
+              : diameter > 150
+                ? "text-lg"
+                : "text-base";
+  const badgeTextSize =
+    diameter > 1000
+      ? "text-4xl px-8 py-3"
+      : diameter > 800
+        ? "text-3xl px-7 py-2.5"
+        : diameter > 600
+          ? "text-2xl px-6 py-2"
+          : diameter > 400
+            ? "text-xl px-5 py-1.5"
+            : diameter > 250
+              ? "text-lg px-4 py-1"
+              : "text-sm px-2 py-0.5";
+  const badgeGap =
+    diameter > 800
+      ? "gap-7 mt-7"
+      : diameter > 500
+        ? "gap-4 mt-4"
+        : diameter > 300
+          ? "gap-3 mt-3"
+          : "gap-1.5 mt-1.5";
   return { nameTextSize, subTextSize, badgeTextSize, badgeGap };
 }
 
 export interface LineBoundaries {
-  smallMax: number; // これ以下が「小」
-  mediumMax: number; // これ以下が「中」、超えると「大」
+  smallMax: number; // at or below this is "small"
+  mediumMax: number; // at or below this is "medium", above is "large"
 }
 
-/** ノードの行数を取得（非コメント行数を優先、なければ物理行数） */
+/** Get the line count of a node (prefer non-comment line count, fall back to physical line count) */
 export function getNodeLineCount(node: NodeData): number | null {
-  // 非コメント行数があればそれを使用
+  // Use non-comment line count if available
   if (node.nonCommentLines !== null && node.nonCommentLines !== undefined) {
     return node.nonCommentLines;
   }
-  // フォールバック: 物理行数
+  // Fallback: physical line count
   if (node.lineStart !== null && node.lineEnd !== null) {
     return node.lineEnd - node.lineStart + 1;
   }
   return null;
 }
 
-/** 三分位数に基づいて境界を計算 */
+/** Calculate boundaries based on terciles */
 export function calculateLineBoundaries(nodes: NodeData[]): LineBoundaries {
   const lineCounts = nodes
     .map((n) => getNodeLineCount(n))
@@ -73,7 +121,7 @@ export function calculateLineBoundaries(nodes: NodeData[]): LineBoundaries {
     .sort((a, b) => a - b);
 
   if (lineCounts.length === 0) {
-    return { smallMax: 5, mediumMax: 15 }; // フォールバック
+    return { smallMax: 5, mediumMax: 15 }; // fallback
   }
 
   const tercile1 = Math.floor(lineCounts.length / 3);
@@ -99,8 +147,7 @@ export function getLineSizeLabel(
   boundaries: LineBoundaries,
   sizeLabel?: string,
 ): string {
-  const label =
-    sizeLabel ?? { small: "小", medium: "中", large: "大" }[category];
+  const label = sizeLabel ?? { small: "S", medium: "M", large: "L" }[category];
   switch (category) {
     case "small":
       return `${label} (1-${boundaries.smallMax})`;
@@ -111,7 +158,7 @@ export function getLineSizeLabel(
   }
 }
 
-/** フィルター済みノードから各カテゴリの個数を計算 */
+/** Calculate the count for each category from filtered nodes */
 export function calculateLineSizeCounts(
   nodes: NodeData[],
   boundaries: LineBoundaries,

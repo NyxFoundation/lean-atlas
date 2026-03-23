@@ -9,7 +9,11 @@ import {
 } from "@/lib/layout";
 import { getTransitiveDependencies } from "@/lib/dependencies";
 import type { CustomNodeData, EdgeData } from "@/lib/types";
-import { calculateNodeDiameter, getNodeDegree, NODE_SIZE_CONFIG } from "@/lib/lineSize";
+import {
+  calculateNodeDiameter,
+  getNodeDegree,
+  NODE_SIZE_CONFIG,
+} from "@/lib/lineSize";
 
 interface UseRelayoutOptions {
   filteredNodes: CustomNodeData[];
@@ -29,7 +33,7 @@ interface UseRelayoutResult {
 }
 
 /**
- * グラフ再レイアウト処理を提供するフック
+ * Hook that provides graph re-layout functionality
  */
 export function useRelayout(options: UseRelayoutOptions): UseRelayoutResult {
   const {
@@ -46,7 +50,7 @@ export function useRelayout(options: UseRelayoutOptions): UseRelayoutResult {
   } = options;
 
   const handleRelayout = useCallback(() => {
-    // ハイライト状態をクリア
+    // Clear highlight state
     clearHighlight();
 
     const rfNodes: Node<CustomNodeData>[] = filteredNodes.map((node) => {
@@ -89,7 +93,7 @@ export function useRelayout(options: UseRelayoutOptions): UseRelayoutResult {
       mainTheoremSink ?? undefined,
     );
 
-    // 主要定理を依存先ノード群の中央に配置
+    // Center the main theorem node among its dependency nodes
     let centeredNodes = layouted.nodes;
     if (mainTheoremSink) {
       const transitiveDeps = getTransitiveDependencies(
@@ -103,7 +107,7 @@ export function useRelayout(options: UseRelayoutOptions): UseRelayoutResult {
       );
     }
 
-    // ビューポートアスペクト比に合わせてスケーリング
+    // Scale to match the viewport aspect ratio
     const reactFlowEl = document.querySelector(".react-flow");
     const viewportWidth = reactFlowEl?.clientWidth ?? window.innerWidth;
     const viewportHeight = reactFlowEl?.clientHeight ?? window.innerHeight;
@@ -113,7 +117,7 @@ export function useRelayout(options: UseRelayoutOptions): UseRelayoutResult {
       viewportHeight,
     );
 
-    // 座標を更新
+    // Update positions
     const newPositions = new Map(nodePositions);
     centeredNodes.forEach((n) => newPositions.set(n.id, n.position));
     updatePositions(newPositions);

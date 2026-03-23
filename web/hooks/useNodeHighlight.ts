@@ -14,8 +14,8 @@ interface UseNodeHighlightResult {
 }
 
 /**
- * ノードのハイライト状態を管理するフック
- * 選択ノード + 直接依存 + 直接被依存をハイライト
+ * Hook that manages node highlight state.
+ * Highlights the selected node + its direct dependencies + direct dependents.
  */
 export function useNodeHighlight(): UseNodeHighlightResult {
   const [highlightedNodeIds, setHighlightedNodeIds] =
@@ -33,7 +33,7 @@ export function useNodeHighlight(): UseNodeHighlightResult {
       const highlighted = new Set<string>();
       highlighted.add(nodeId);
 
-      // フィルター済みノード内の直接依存・被依存のみ
+      // Only include direct dependencies and dependents within the filtered nodes
       nodeData.dependencies.forEach((dep) => {
         if (filteredNodeIds.has(dep)) highlighted.add(dep);
       });

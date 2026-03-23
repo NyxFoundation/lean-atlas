@@ -1,6 +1,6 @@
 {
   "name": "@nyx-foundation/lean-atlas",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,9 @@
     "lint": "eslint",
     "generate-data": "echo 'Run from consuming project: lake exe atlas graph-data --output <path-to>/web/public/data/graph.json --pretty'",
     "copy-lean-source": "rm -rf public/lean-source && mkdir -p public/lean-source && if [ -n \"$LEAN_ATLAS_SOURCE_DIR\" ]; then cp -r \"${LEAN_PROJECT_ROOT:-..}/$LEAN_ATLAS_SOURCE_DIR\" public/lean-source/; else echo 'Set LEAN_ATLAS_SOURCE_DIR and optionally LEAN_PROJECT_ROOT to copy source files'; fi",
-    "build:full": "pnpm run copy-lean-source && pnpm run build"
+    "build:full": "pnpm run copy-lean-source && pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@types/dagre": "^0.7.53",
@@ -29,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.1.0"
   }
 }

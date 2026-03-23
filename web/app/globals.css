@@ -5,7 +5,7 @@
 :root {
   --background: #fefdfa;
   --foreground: #171717;
-  --panel-bg: rgba(255,255,255,0.85);
+  --panel-bg: rgba(255, 255, 255, 0.85);
   --panel-bg-solid: #faf8f5;
   --panel-border: #e8dcc8;
   --panel-text: #1e293b;
@@ -17,7 +17,7 @@
   --accent: #c2956a;
   --accent-hover: #a87d55;
   --divider: #ede5d8;
-  --hover-bg: rgba(232,220,200,0.3);
+  --hover-bg: rgba(232, 220, 200, 0.3);
   --filter-active-bg: #f0e4d4;
   --filter-active-border: #c9a97a;
   --filter-active-text: #6d4c2e;
@@ -29,24 +29,24 @@
 .dark {
   --background: #0c0c18;
   --foreground: #e8e8f0;
-  --panel-bg: rgba(18,18,32,0.75);
+  --panel-bg: rgba(18, 18, 32, 0.75);
   --panel-bg-solid: #14142a;
-  --panel-border: rgba(100,100,180,0.15);
+  --panel-border: rgba(100, 100, 180, 0.15);
   --panel-text: #e8e8f0;
   --panel-text-muted: #8888a8;
   --panel-text-faint: #5a5a78;
-  --input-bg: rgba(24,24,42,0.6);
-  --input-border: rgba(100,100,180,0.2);
+  --input-bg: rgba(24, 24, 42, 0.6);
+  --input-border: rgba(100, 100, 180, 0.2);
   --input-focus-ring: #7c6ce0;
   --accent: #7c6ce0;
   --accent-hover: #6558c0;
-  --divider: rgba(100,100,180,0.12);
-  --hover-bg: rgba(100,100,180,0.08);
-  --filter-active-bg: rgba(100,100,180,0.12);
-  --filter-active-border: rgba(100,100,180,0.25);
+  --divider: rgba(100, 100, 180, 0.12);
+  --hover-bg: rgba(100, 100, 180, 0.08);
+  --filter-active-bg: rgba(100, 100, 180, 0.12);
+  --filter-active-border: rgba(100, 100, 180, 0.25);
   --filter-active-text: #8888a8;
-  --filter-inactive-bg: rgba(24,24,42,0.5);
-  --filter-inactive-border: rgba(100,100,180,0.15);
+  --filter-inactive-bg: rgba(24, 24, 42, 0.5);
+  --filter-inactive-border: rgba(100, 100, 180, 0.15);
   --filter-inactive-text: #5a5a78;
 }
 
@@ -64,43 +64,50 @@ body {
   font-family: var(--font-sans);
 }
 
-/* ユーティリティ: パネル共通 */
+/* Utility: shared panel styles */
 .atlas-panel {
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(120, 100, 80, 0.08), 0 1px 2px rgba(120, 100, 80, 0.06);
+  box-shadow:
+    0 1px 3px rgba(120, 100, 80, 0.08),
+    0 1px 2px rgba(120, 100, 80, 0.06);
 }
 .dark .atlas-panel {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 1px rgba(100, 100, 180, 0.1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 1px rgba(100, 100, 180, 0.1);
 }
 
-/* ユーティリティ: パネルヘッダー（sticky用） */
+/* Utility: panel header (for sticky positioning) */
 .atlas-panel-header {
   background: var(--panel-bg-solid);
   border-bottom: 1px solid var(--panel-border);
 }
 
-/* ユーティリティ: input共通 */
+/* Utility: shared input styles */
 .atlas-input {
   background: var(--input-bg);
   border: 1px solid var(--input-border);
   border-radius: 0.375rem;
   color: var(--panel-text);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .atlas-input:focus {
   border-color: var(--input-focus-ring);
   outline: none;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--input-focus-ring) 30%, transparent);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--input-focus-ring) 30%, transparent);
 }
 .atlas-input::placeholder {
   color: var(--panel-text-faint);
 }
 
-/* ユーティリティ: プライマリボタン */
+/* Utility: primary button */
 .atlas-btn-primary {
   background: var(--accent);
   color: #ffffff;
@@ -115,7 +122,7 @@ body {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
-/* React Flow のライトモード対応 */
+/* React Flow light mode overrides */
 .react-flow__background {
   background-color: #fefdfa;
 }
@@ -135,29 +142,29 @@ body {
   border-color: var(--panel-border) !important;
 }
 
-/* React Flow のダークモード対応 */
+/* React Flow dark mode overrides */
 .dark .react-flow__background {
   background-color: #0c0c18;
 }
 
 .dark .react-flow__controls button {
-  background-color: rgba(18,18,32,0.75);
-  border-color: rgba(100,100,180,0.15);
+  background-color: rgba(18, 18, 32, 0.75);
+  border-color: rgba(100, 100, 180, 0.15);
   fill: #8888a8;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 .dark .react-flow__controls button:hover {
-  background-color: rgba(100,100,180,0.12);
+  background-color: rgba(100, 100, 180, 0.12);
 }
 
 .dark .react-flow__minimap {
-  background-color: rgba(18,18,32,0.75) !important;
-  border-color: rgba(100,100,180,0.15) !important;
+  background-color: rgba(18, 18, 32, 0.75) !important;
+  border-color: rgba(100, 100, 180, 0.15) !important;
 }
 
-/* ノードのグロー効果（ダークモード）— ティール系 */
+/* Node glow effect (dark mode) -- teal accent */
 .dark .atlas-node {
   box-shadow:
     0 0 10px 1px rgba(45, 140, 135, 0.2),
@@ -170,7 +177,7 @@ body {
     0 0 32px 4px rgba(45, 140, 135, 0.18);
 }
 
-/* エッジアニメーションの方向を逆にする（依存先→依存元） */
+/* Reverse edge animation direction (dependency target -> dependency source) */
 .react-flow__edge-path {
   animation-direction: reverse !important;
 }

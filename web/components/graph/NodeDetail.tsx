@@ -14,7 +14,7 @@ import {
 } from "@/lib/dependencies";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 
-/** 公理リスト項目: グラフ内ならクリック可能ボタン、グラフ外ならスパン */
+/** Axiom list item: clickable button if in graph, span if outside graph */
 function AxiomListItem({
   ax,
   isInGraph,
@@ -47,7 +47,7 @@ function AxiomListItem({
   );
 }
 
-/** ノードリンク項目: クリック可能なボタン */
+/** Node link item: clickable button */
 function NodeLinkItem({
   nodeId,
   onNodeClick,
@@ -108,7 +108,7 @@ export function NodeDetail({
     null,
   );
 
-  // ソースコード表示状態
+  // Source code display state
   const {
     isCodeExpanded,
     sourceCode,
@@ -124,12 +124,12 @@ export function NodeDetail({
     initialNonCommentLines: node?.nonCommentLines ?? null,
   });
 
-  // ノードが変わったらソースコード表示をリセット
+  // Reset source code display when node changes
   useEffect(() => {
     resetSourceCode();
   }, [node?.id, resetSourceCode]);
 
-  // フィルター済み依存関係
+  // Filtered dependencies
   const visibleDependencies = useMemo(() => {
     if (!node) return [];
     return node.dependencies.filter((id) => filteredNodeIds.has(id));
@@ -140,7 +140,7 @@ export function NodeDetail({
     return node.dependents.filter((id) => filteredNodeIds.has(id));
   }, [node, filteredNodeIds]);
 
-  // スコープ外の数
+  // Count of out-of-scope items
   const outOfScopeDependencies = node
     ? node.dependencies.length - visibleDependencies.length
     : 0;
@@ -148,7 +148,7 @@ export function NodeDetail({
     ? node.dependents.length - visibleDependents.length
     : 0;
 
-  // スコープ内の全推移的依存関係
+  // All transitive dependencies within scope
   const allTransitiveDeps = useMemo(() => {
     if (!node) return new Set<string>();
     const deps = getTransitiveDependencies(node.id, nodesMap, filteredNodeIds);
@@ -156,7 +156,7 @@ export function NodeDetail({
     return deps;
   }, [node, nodesMap, filteredNodeIds]);
 
-  // スコープ内の全推移的被依存関係
+  // All transitive dependents within scope
   const allTransitiveDependents = useMemo(() => {
     if (!node) return new Set<string>();
     return getTransitiveDependents(node.id, nodesMap, filteredNodeIds);
@@ -175,7 +175,7 @@ export function NodeDetail({
         isCodeExpanded ? "w-[960px]" : "w-80"
       }`}
     >
-      {/* ヘッダー */}
+      {/* Header */}
       <div className="atlas-panel-header sticky top-0 rounded-t-lg px-4 py-3 flex items-center justify-between">
         <h3 className="font-semibold text-[var(--panel-text)] truncate pr-2">
           {node.shortName}
@@ -188,9 +188,9 @@ export function NodeDetail({
         </button>
       </div>
 
-      {/* コンテンツ */}
+      {/* Content */}
       <div className="p-4 space-y-4">
-        {/* 基本情報 */}
+        {/* Basic information */}
         <div>
           <h4 className="text-xs font-medium text-[var(--panel-text-muted)] uppercase tracking-wider mb-2">
             {t.nodeDetail.basicInfo}
@@ -296,7 +296,7 @@ export function NodeDetail({
           </dl>
         </div>
 
-        {/* 実装を見るボタン */}
+        {/* View implementation button */}
         {hasLineInfo && (
           <div>
             <div className="flex gap-2">
@@ -321,7 +321,7 @@ export function NodeDetail({
               )}
             </div>
 
-            {/* ソースコード表示エリア */}
+            {/* Source code display area */}
             {isCodeExpanded && (
               <div className="mt-3">
                 {codeError ? (
@@ -339,7 +339,7 @@ export function NodeDetail({
           </div>
         )}
 
-        {/* メタデータ */}
+        {/* Metadata */}
         {(node.meta.name ||
           node.meta.confidence ||
           node.meta.proofProgress ||
@@ -369,7 +369,7 @@ export function NodeDetail({
                   </dd>
                 </div>
               )}
-              {/* 確信度 */}
+              {/* Confidence */}
               {node.meta.confidence && (
                 <div className="flex">
                   <dt className="w-20 text-[var(--panel-text-muted)]">
@@ -382,7 +382,7 @@ export function NodeDetail({
                   </dd>
                 </div>
               )}
-              {/* 検証承認ボタン */}
+              {/* Review approval button */}
               {node.meta.confidence === "high" &&
                 node.lineStart !== null &&
                 onApproveConfidence && (
@@ -437,7 +437,7 @@ export function NodeDetail({
                     )}
                   </div>
                 )}
-              {/* 証明進捗度（定理用） */}
+              {/* Proof progress (for theorems) */}
               {node.kind === "theorem" && node.meta.proofProgress && (
                 <div className="flex">
                   <dt className="w-20 text-[var(--panel-text-muted)]">
@@ -450,7 +450,7 @@ export function NodeDetail({
                   </dd>
                 </div>
               )}
-              {/* 定義進捗度（定義用） */}
+              {/* Definition progress (for definitions) */}
               {node.kind === "definition" && node.meta.defProgress && (
                 <div className="flex">
                   <dt className="w-20 text-[var(--panel-text-muted)]">
@@ -477,7 +477,7 @@ export function NodeDetail({
           </div>
         )}
 
-        {/* 依存公理（主定理のみ） */}
+        {/* Dependent axioms (main theorems only) */}
         {node.meta.isMainTheorem && (
           <div>
             <h4 className="text-xs font-medium text-[var(--panel-text-muted)] uppercase tracking-wider mb-2">
@@ -542,7 +542,7 @@ export function NodeDetail({
           </div>
         )}
 
-        {/* 依存関係 */}
+        {/* Dependencies */}
         {node.dependencies.length > 0 && (
           <div>
             <button
@@ -587,7 +587,7 @@ export function NodeDetail({
           </div>
         )}
 
-        {/* 被依存関係 */}
+        {/* Dependents */}
         {node.dependents.length > 0 && (
           <div>
             <button

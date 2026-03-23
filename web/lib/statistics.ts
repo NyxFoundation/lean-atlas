@@ -45,7 +45,7 @@ export interface FilterCounts {
 }
 
 /**
- * ノード配列から統計情報を計算（シングルパス）
+ * Calculate statistics from a node array (single pass)
  */
 export function calculateNodeStats(nodes: CustomNodeData[]): NodeStats {
   let theorems = 0;
@@ -92,7 +92,7 @@ export function calculateNodeStats(nodes: CustomNodeData[]): NodeStats {
 }
 
 /**
- * フィルターボタン用のカウントを計算（シングルパス + lineSize）
+ * Calculate counts for filter buttons (single pass + lineSize)
  */
 export function calculateFilterCounts(
   nodes: CustomNodeData[],

@@ -1,7 +1,11 @@
 import { Position, MarkerType, type Node, type Edge } from "@xyflow/react";
 import type { CustomNodeData, EdgeData, EdgeVisualKind } from "@/lib/types";
 import { EDGE_KIND_STYLES, edgeKindToVisualKind } from "@/lib/constants";
-import { calculateNodeDiameter, getNodeDegree, NODE_SIZE_CONFIG } from "@/lib/lineSize";
+import {
+  calculateNodeDiameter,
+  getNodeDegree,
+  NODE_SIZE_CONFIG,
+} from "@/lib/lineSize";
 
 interface BuildDisplayNodesOptions {
   filteredNodes: CustomNodeData[];
@@ -14,7 +18,7 @@ interface BuildDisplayNodesOptions {
 }
 
 /**
- * React Flow 用の表示ノードを構築
+ * Build display nodes for React Flow
  */
 export function buildDisplayNodes(
   options: BuildDisplayNodesOptions,
@@ -29,7 +33,7 @@ export function buildDisplayNodes(
     verificationTargetIds,
   } = options;
 
-  // レイアウト方向に基づいてハンドル位置を決定
+  // Determine handle positions based on layout direction
   const targetPosition =
     layoutDirection === "BT" ? Position.Bottom : Position.Top;
   const sourcePosition =
@@ -37,10 +41,10 @@ export function buildDisplayNodes(
 
   return filteredNodes.map((node) => {
     const position = nodePositions.get(node.id) || { x: 0, y: 0 };
-    // ハイライト状態を決定（null = ハイライトモードOFF = 全てハイライト扱い）
+    // Determine highlight state (null = highlight mode OFF = treat all as highlighted)
     const isHighlighted =
       highlightedNodeIds === null ? true : highlightedNodeIds.has(node.id);
-    // 検証対象判定（null = 主定理なし = 全てデフォルト扱い）
+    // Determine verification target (null = no main theorem = treat all as default)
     const isVerificationTarget =
       verificationTargetIds === null
         ? true
@@ -80,7 +84,7 @@ interface BuildDisplayEdgesOptions {
 }
 
 /**
- * React Flow 用の表示エッジを構築
+ * Build display edges for React Flow
  */
 export function buildDisplayEdges(options: BuildDisplayEdgesOptions): Edge[] {
   const { edges, filteredNodeIds, highlightedNodeIds, edgeKindFilter, theme } =
@@ -88,11 +92,11 @@ export function buildDisplayEdges(options: BuildDisplayEdgesOptions): Edge[] {
 
   return edges
     .filter((e) => {
-      // ノードフィルター
+      // Node filter
       if (!filteredNodeIds.has(e.source) || !filteredNodeIds.has(e.target)) {
         return false;
       }
-      // エッジ種類フィルター（視覚カテゴリで判定）
+      // Edge kind filter (determined by visual category)
       if (edgeKindFilter && edgeKindFilter.size < 2) {
         const visualKind = edgeKindToVisualKind(e.kind);
         if (!edgeKindFilter.has(visualKind)) {
@@ -102,14 +106,14 @@ export function buildDisplayEdges(options: BuildDisplayEdgesOptions): Edge[] {
       return true;
     })
     .map((edge) => {
-      // エッジのハイライト: 両端ともハイライトされている場合のみ不透明
+      // Edge highlight: opaque only when both endpoints are highlighted
       const edgeHighlighted =
         highlightedNodeIds === null
           ? true
           : highlightedNodeIds.has(edge.source) &&
             highlightedNodeIds.has(edge.target);
 
-      // エッジ種類に応じたスタイル（視覚カテゴリで決定）
+      // Style based on edge kind (determined by visual category)
       const visualKind = edgeKindToVisualKind(edge.kind);
       const kindStyle = EDGE_KIND_STYLES[visualKind];
       const edgeColor =

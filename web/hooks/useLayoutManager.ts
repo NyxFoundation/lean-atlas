@@ -10,7 +10,11 @@ import {
 import { getTransitiveDependencies } from "@/lib/dependencies";
 import type { CustomNodeData, GraphData } from "@/lib/types";
 import type { LayoutDirection } from "@/lib/settings";
-import { calculateNodeDiameter, getNodeDegree, NODE_SIZE_CONFIG } from "@/lib/lineSize";
+import {
+  calculateNodeDiameter,
+  getNodeDegree,
+  NODE_SIZE_CONFIG,
+} from "@/lib/lineSize";
 
 interface UseLayoutManagerProps {
   data: GraphData | null;
@@ -34,21 +38,21 @@ export function useLayoutManager({
   layoutDirection,
   requestFitView,
 }: UseLayoutManagerProps): UseLayoutManagerResult {
-  // ノードの座標をマップで保持（id -> position）
+  // Store node positions in a map (id -> position)
   const [nodePositions, setNodePositions] = useState<
     Map<string, { x: number; y: number }>
   >(new Map());
 
-  // 前回の主定理とレイアウト方向を追跡して変更を検出
+  // Track previous main theorem and layout direction to detect changes
   const prevMainTheoremRef = useRef<string | null>(null);
   const prevLayoutDirectionRef = useRef<LayoutDirection>(layoutDirection);
 
-  // 主定理変更時またはレイアウト方向変更時に依存グラフでレイアウト再計算
+  // Recalculate layout for the dependency graph when main theorem or layout direction changes
   useEffect(() => {
     if (!data || !mainTheoremSink) return;
     let rafId: number | null = null;
 
-    // 主定理もレイアウト方向も変わっていない場合はスキップ
+    // Skip if neither the main theorem nor the layout direction has changed
     const mainTheoremChanged = prevMainTheoremRef.current !== mainTheoremSink;
     const layoutDirectionChanged =
       prevLayoutDirectionRef.current !== layoutDirection;
@@ -57,7 +61,7 @@ export function useLayoutManager({
     prevMainTheoremRef.current = mainTheoremSink;
     prevLayoutDirectionRef.current = layoutDirection;
 
-    // sink の依存ノードのみでレイアウト計算
+    // Compute layout using only the sink's dependency nodes
     const sinkDeps = getTransitiveDependencies(
       mainTheoremSink,
       nodesWithDependents,
@@ -66,7 +70,7 @@ export function useLayoutManager({
       sinkDeps.has(n.id),
     );
 
-    // レイアウト計算
+    // Compute layout
     const rfNodes: Node<CustomNodeData>[] = sinkNodes.map((node) => {
       const isSink = node.id === mainTheoremSink;
       const diameter = isSink
@@ -99,14 +103,14 @@ export function useLayoutManager({
       mainTheoremSink,
     );
 
-    // 主要定理を依存先ノード群の中央に配置
+    // Center the main theorem node among its dependency nodes
     const centeredNodes = centerMainTheoremNode(
       layouted.nodes,
       mainTheoremSink,
       sinkDeps,
     );
 
-    // ビューポートアスペクト比に合わせてスケーリング
+    // Scale to match the viewport aspect ratio
     const reactFlowEl = document.querySelector(".react-flow");
     const viewportWidth = reactFlowEl?.clientWidth ?? window.innerWidth;
     const viewportHeight = reactFlowEl?.clientHeight ?? window.innerHeight;
@@ -116,7 +120,7 @@ export function useLayoutManager({
       viewportHeight,
     );
 
-    // 座標を保存
+    // Save positions
     const newPositions = new Map<string, { x: number; y: number }>();
     scaledNodes.forEach((n) => newPositions.set(n.id, n.position));
     rafId = window.requestAnimationFrame(() => {
@@ -137,7 +141,7 @@ export function useLayoutManager({
     requestFitView,
   ]);
 
-  // 外部から座標を更新するための関数
+  // Function to update positions from external callers
   const updatePositions = useCallback(
     (newPositions: Map<string, { x: number; y: number }>) => {
       setNodePositions(newPositions);

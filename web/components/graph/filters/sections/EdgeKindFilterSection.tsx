@@ -13,14 +13,8 @@ function useEdgeColor(): string {
   return theme === "dark" ? style.color.dark : style.color.light;
 }
 
-/** SVG でエッジスタイルのレジェンドアイコンを描画 */
-function EdgeLineIcon({
-  dashed,
-  color,
-}: {
-  dashed: boolean;
-  color: string;
-}) {
+/** Render edge style legend icon as SVG */
+function EdgeLineIcon({ dashed, color }: { dashed: boolean; color: string }) {
   return (
     <svg width="16" height="8" className="shrink-0">
       <line

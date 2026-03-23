@@ -13,7 +13,7 @@ export const SUPPORTED_LANGUAGES: { id: Language; label: string }[] = [
 
 export const translations: Record<Language, TranslationDict> = { ja, en };
 
-/** ブラウザの言語設定を検出 */
+/** Detect the browser's language setting */
 export function detectBrowserLanguage(): Language {
   if (typeof navigator === "undefined") return "en";
   const lang = navigator.language || "";

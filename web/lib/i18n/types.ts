@@ -4,7 +4,7 @@ export interface TranslationDict {
   // GraphFilters
   filters: {
     reset: string;
-    nodesShowing: string; // "{count} ノード表示中"
+    nodesShowing: string; // "Showing {count} nodes"
     alwaysShowMainTheorems: string;
     humanReviewOnly: string;
     humanReviewTooltip: string;
@@ -32,7 +32,7 @@ export interface TranslationDict {
     dependencies: string;
     dependents: string;
     searchNodes: string;
-    selected: string; // "選択済み ({count}件)"
+    selected: string; // "Selected ({count})"
     clear: string;
     relayout: string;
   };
@@ -42,8 +42,8 @@ export interface TranslationDict {
     fullName: string;
     kind: string;
     file: string;
-    lineCount: string; // "行数"
-    lines: string; // "行"
+    lineCount: string; // "Line count"
+    lines: string; // "lines"
     sorry: string;
     sorryYes: string;
     sorryNo: string;
@@ -51,9 +51,9 @@ export interface TranslationDict {
     reviewTarget: string;
     reviewNonTarget: string;
     outOfScope: string;
-    depNodes: string; // "依存ノード {count}件"
-    depNodesAll: string; // "全{count}件"
-    dependentNodes: string; // "被依存ノード {count}件"
+    depNodes: string; // "Dependencies ({count})"
+    depNodesAll: string; // "All {count}"
+    dependentNodes: string; // "Dependents ({count})"
     noMatchingNodes: string;
     viewImpl: string;
     closeImpl: string;

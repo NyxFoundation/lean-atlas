@@ -1,7 +1,7 @@
 import type { CustomNodeData, EdgeData } from "./types";
 
 /**
- * ノードマップ上でDFS走査を行い、到達可能なノードIDを返す
+ * Perform DFS traversal on a node map and return reachable node IDs
  */
 function traverseGraph(
   nodeId: string,
@@ -15,7 +15,7 @@ function traverseGraph(
   while (stack.length > 0) {
     const current = stack.pop()!;
     if (visited.has(current)) continue;
-    // スコープが指定されている場合、スコープ外のノードはスキップ
+    // If a scope is specified, skip nodes outside the scope
     if (scope && !scope.has(current)) continue;
     visited.add(current);
 
@@ -33,8 +33,8 @@ function traverseGraph(
 }
 
 /**
- * 指定ノードの推移的依存関係（上流）を全て取得（DFS）
- * @returns sink とその全依存を含む Set
+ * Get all transitive dependencies (upstream) of the specified node via DFS
+ * @returns Set containing the sink and all its dependencies
  */
 export function getTransitiveDependencies(
   nodeId: string,
@@ -45,8 +45,8 @@ export function getTransitiveDependencies(
 }
 
 /**
- * 指定ノードの推移的被依存関係（下流）を全て取得（DFS）
- * @returns 自身を除く全被依存ノードの Set
+ * Get all transitive dependents (downstream) of the specified node via DFS
+ * @returns Set of all dependent nodes, excluding the node itself
  */
 export function getTransitiveDependents(
   nodeId: string,
@@ -54,23 +54,23 @@ export function getTransitiveDependents(
   scope?: Set<string>,
 ): Set<string> {
   const visited = traverseGraph(nodeId, nodesMap, (n) => n.dependents, scope);
-  visited.delete(nodeId); // 自身を除外
+  visited.delete(nodeId); // exclude self
   return visited;
 }
 
 /**
- * エッジフィルター付き到達可能ノード取得（DFS）
- * @param startNodeIds - 探索開始ノードID群
- * @param edges - 全エッジデータ
- * @param shouldTraverse - エッジを辿るかどうかの述語関数
- * @returns 到達可能な全ノードIDの Set（開始ノード自身も含む）
+ * Get reachable nodes with edge filtering via DFS
+ * @param startNodeIds - starting node IDs for traversal
+ * @param edges - all edge data
+ * @param shouldTraverse - predicate function for whether to follow an edge
+ * @returns Set of all reachable node IDs (including starting nodes themselves)
  */
 export function getReachableByEdgeFilter(
   startNodeIds: string[],
   edges: EdgeData[],
   shouldTraverse: (edge: EdgeData) => boolean,
 ): Set<string> {
-  // shouldTraverse を満たすエッジのみで隣接リストを構築
+  // Build adjacency list using only edges that satisfy shouldTraverse
   const adjacency = new Map<string, string[]>();
   for (const edge of edges) {
     if (!shouldTraverse(edge)) continue;

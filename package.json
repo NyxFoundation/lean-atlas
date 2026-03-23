@@ -8,6 +8,8 @@
     "build": "pnpm -C web build",
     "start": "pnpm -C web start",
     "lint": "pnpm -C web lint",
+    "test": "pnpm -C web test",
+    "test:watch": "pnpm -C web test:watch",
     "format": "prettier --write ."
   },
   "keywords": [],

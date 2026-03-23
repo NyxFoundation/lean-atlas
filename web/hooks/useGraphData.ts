@@ -44,18 +44,18 @@ export function useGraphData(
     setReloadTrigger((prev) => prev + 1);
   }, []);
 
-  // ノードに被依存情報を追加
+  // Add reverse dependency information to nodes
   const nodesWithDependents = useMemo(() => {
     if (!data) return new Map<string, CustomNodeData>();
 
     const dependentsMap = new Map<string, string[]>();
 
-    // 初期化
+    // Initialize
     data.nodes.forEach((node) => {
       dependentsMap.set(node.id, []);
     });
 
-    // エッジから被依存関係を構築
+    // Build reverse dependency relationships from edges
     data.edges.forEach((edge) => {
       const dependents = dependentsMap.get(edge.target);
       if (dependents) {
@@ -63,7 +63,7 @@ export function useGraphData(
       }
     });
 
-    // CustomNodeData を構築
+    // Build CustomNodeData
     const result = new Map<string, CustomNodeData>();
     data.nodes.forEach((node) => {
       result.set(node.id, {

@@ -1,8 +1,8 @@
-// ソースコード取得とシンタックスハイライトのユーティリティ
+// Utilities for fetching source code and syntax highlighting
 
 import { createHighlighter, type Highlighter } from "shiki";
 
-// Shiki ハイライターをシングルトンで管理
+// Manage the Shiki highlighter as a singleton
 let highlighterPromise: Promise<Highlighter> | null = null;
 
 async function getHighlighter(): Promise<Highlighter> {
@@ -16,14 +16,14 @@ async function getHighlighter(): Promise<Highlighter> {
 }
 
 /**
- * Lean 4 ソースコードからコメントと空行を除去する
+ * Strip comments and blank lines from Lean 4 source code
  *
- * ステートマシンで文字単位に処理し、以下を正確に除去:
- * - 単一行コメント: -- から行末まで
- * - ブロックコメント: /- ... -/ （ネスト対応）
- * - 文字列リテラル内のコメント風トークンは保持
+ * Processes character by character using a state machine, accurately removing:
+ * - Line comments: from -- to end of line
+ * - Block comments: /- ... -/ (supports nesting)
+ * - Comment-like tokens inside string literals are preserved
  *
- * 後処理: 空行・空白のみの行を除去
+ * Post-processing: removes blank lines and whitespace-only lines
  */
 export function stripLeanComments(code: string): string {
   const enum State {
@@ -105,7 +105,7 @@ export function stripLeanComments(code: string): string {
     }
   }
 
-  // 後処理: 空行・空白のみの行を除去
+  // Post-processing: remove blank lines and whitespace-only lines
   return out
     .join("")
     .split("\n")
@@ -121,11 +121,11 @@ interface FetchSourceCodeResult {
 }
 
 /**
- * Lean ソースコードを取得し、コメント除去・シンタックスハイライト付きの HTML を返す
+ * Fetch Lean source code and return HTML with comments stripped and syntax highlighted
  * @param filePath - Lean file path (e.g. "ProjectName/Subdir/File.lean")
- * @param lineStart - 開始行番号（1-indexed）
- * @param lineEnd - 終了行番号（1-indexed）
- * @param isDark - ダークモードかどうか
+ * @param lineStart - start line number (1-indexed)
+ * @param lineEnd - end line number (1-indexed)
+ * @param isDark - whether dark mode is active
  */
 export async function fetchSourceCode(
   filePath: string,
@@ -133,7 +133,7 @@ export async function fetchSourceCode(
   lineEnd: number,
   isDark: boolean,
 ): Promise<FetchSourceCodeResult> {
-  // API Route から取得を試みる
+  // Try fetching from the API route
   let rawCode: string;
   try {
     const params = new URLSearchParams({
@@ -148,7 +148,7 @@ export async function fetchSourceCode(
     const data = await response.json();
     rawCode = data.code;
   } catch {
-    // フォールバック: 静的ファイルから取得
+    // Fallback: fetch from static file
     const response = await fetch(`/lean-source/${filePath}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch source: ${response.status}`);
@@ -160,13 +160,13 @@ export async function fetchSourceCode(
 
   const totalLines = rawCode.split("\n").length;
 
-  // コメント除去
+  // Strip comments
   const strippedCode = stripLeanComments(rawCode);
   const nonCommentLines = strippedCode
     .split("\n")
     .filter((l) => l.trim() !== "").length;
 
-  // コメント除去後のコードをハイライト
+  // Highlight the code after stripping comments
   const highlighter = await getHighlighter();
   const html = highlighter.codeToHtml(strippedCode, {
     lang: "lean4",

@@ -55,7 +55,7 @@ export function SettingsPanel({
   const { t, language, setLanguage } = useTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // 外側クリックで閉じる
+  // Close on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -78,7 +78,7 @@ export function SettingsPanel({
       ref={panelRef}
       className="absolute right-4 top-4 z-40 flex items-center gap-2"
     >
-      {/* リロードボタン */}
+      {/* Reload button */}
       <button
         onClick={onReload}
         className="atlas-panel p-2 hover:bg-[var(--hover-bg)] transition-colors"
@@ -100,7 +100,7 @@ export function SettingsPanel({
         </svg>
       </button>
 
-      {/* 歯車アイコンボタン */}
+      {/* Gear icon button */}
       <button
         onClick={onToggle}
         className="atlas-panel p-2 hover:bg-[var(--hover-bg)] transition-colors"
@@ -127,14 +127,14 @@ export function SettingsPanel({
         </svg>
       </button>
 
-      {/* ドロップダウンパネル */}
+      {/* Dropdown panel */}
       {isOpen && (
         <div className="atlas-panel absolute right-0 top-full mt-2 w-80 max-h-[calc(100vh-6rem)] overflow-y-auto p-4 space-y-4">
           <h4 className="text-xs font-medium text-[var(--panel-text-muted)] uppercase tracking-wider">
             {t.settings.title}
           </h4>
 
-          {/* 言語 */}
+          {/* Language */}
           <div>
             <label className="text-xs text-[var(--panel-text-muted)] block mb-2">
               {t.settings.language}
@@ -152,7 +152,7 @@ export function SettingsPanel({
             </select>
           </div>
 
-          {/* テーマ */}
+          {/* Theme */}
           <div className="pt-3 border-t border-[var(--divider)]">
             <label className="text-xs text-[var(--panel-text-muted)] block mb-2">
               {t.settings.theme}
@@ -197,7 +197,7 @@ export function SettingsPanel({
             </div>
           </div>
 
-          {/* レイアウト方向 */}
+          {/* Layout direction */}
           <div className="pt-3 border-t border-[var(--divider)]">
             <label className="text-xs text-[var(--panel-text-muted)] flex items-center gap-1 mb-2">
               {t.settings.layoutDirection}
@@ -231,7 +231,7 @@ export function SettingsPanel({
             </div>
           </div>
 
-          {/* デフォルト主要定理 */}
+          {/* Default main theorem */}
           {mainTheorems.length > 0 && (
             <div className="pt-3 border-t border-[var(--divider)]">
               <label className="text-xs text-[var(--panel-text-muted)] flex items-center gap-1 mb-2">
@@ -257,7 +257,7 @@ export function SettingsPanel({
             </div>
           )}
 
-          {/* ワークスペースパス */}
+          {/* Workspace path */}
           <div className="pt-3 border-t border-[var(--divider)]">
             <label className="text-xs text-[var(--panel-text-muted)] flex items-center gap-1 mb-2">
               {t.settings.workspacePath}
@@ -272,7 +272,7 @@ export function SettingsPanel({
             />
           </div>
 
-          {/* ファイルパス省略 */}
+          {/* File path prefix */}
           <div className="pt-3 border-t border-[var(--divider)]">
             <label className="text-xs text-[var(--panel-text-muted)] flex items-center gap-1 mb-2">
               {t.settings.filePathPrefix}

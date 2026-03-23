@@ -8,7 +8,7 @@ import type {
   SubKind,
 } from "./types";
 
-// 確信度の設定
+// Confidence settings
 const CONFIDENCE_CONFIG = {
   perfect: {
     base: "#2563eb",
@@ -16,11 +16,12 @@ const CONFIDENCE_CONFIG = {
     border: { light: "border-blue-500", dark: "dark:border-blue-400" },
     text: { light: "text-blue-900", dark: "dark:text-blue-100" },
     dot: "bg-blue-500",
-    label: "完",
+    label: "Perfect",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
   },
   high: {
@@ -29,11 +30,12 @@ const CONFIDENCE_CONFIG = {
     border: { light: "border-cyan-400", dark: "dark:border-cyan-500" },
     text: { light: "text-cyan-800", dark: "dark:text-cyan-200" },
     dot: "bg-cyan-500",
-    label: "高",
+    label: "High",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
   },
   medium: {
@@ -42,11 +44,12 @@ const CONFIDENCE_CONFIG = {
     border: { light: "border-emerald-400", dark: "dark:border-emerald-600" },
     text: { light: "text-emerald-800", dark: "dark:text-emerald-200" },
     dot: "bg-green-500",
-    label: "中",
+    label: "Medium",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
   },
   low: {
@@ -55,7 +58,7 @@ const CONFIDENCE_CONFIG = {
     border: { light: "border-amber-400", dark: "dark:border-amber-600" },
     text: { light: "text-amber-800", dark: "dark:text-amber-200" },
     dot: "bg-yellow-500",
-    label: "低",
+    label: "Low",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
@@ -65,10 +68,10 @@ const CONFIDENCE_CONFIG = {
   },
 } as const;
 
-// 証明進捗度の設定
+// Proof progress settings
 const PROOF_PROGRESS_CONFIG = {
   complete: {
-    label: "完了",
+    label: "Complete",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
@@ -78,38 +81,41 @@ const PROOF_PROGRESS_CONFIG = {
     indicator: "border-solid",
   },
   mostly: {
-    label: "大部分",
+    label: "Mostly",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
     indicator: "border-dashed",
   },
   partially: {
-    label: "部分",
+    label: "Partial",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
     indicator: "border-dotted",
   },
   stub: {
-    label: "未着手",
+    label: "Stub",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
     indicator: "border-none",
   },
 } as const;
 
-// 定義進捗度の設定
+// Definition progress settings
 const DEF_PROGRESS_CONFIG = {
   complete: {
-    label: "完了",
+    label: "Complete",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
@@ -118,16 +124,17 @@ const DEF_PROGRESS_CONFIG = {
     labelColor: "text-[var(--panel-text)]",
   },
   partially: {
-    label: "部分",
+    label: "Partial",
     filterBg: "bg-stone-200",
     filterBorder: "border-stone-400",
     filterText: "text-stone-700",
-    filterDark: "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
+    filterDark:
+      "dark:bg-[rgba(100,100,180,0.12)] dark:border-[rgba(100,100,180,0.25)] dark:text-[#8888a8]",
     labelColor: "text-[var(--panel-text)]",
   },
 } as const;
 
-// none 確信度のインラインスタイル（Tailwind JIT が動的クラスを検出できない場合の対策）
+// Inline styles for "none" confidence (fallback when Tailwind JIT cannot detect dynamic classes)
 export const NONE_CONFIDENCE_INLINE_STYLES = {
   light: {
     bg: "rgba(45, 140, 135, 0.85)", // vibrant teal
@@ -135,14 +142,13 @@ export const NONE_CONFIDENCE_INLINE_STYLES = {
     text: "#ffffff",
   },
   dark: {
-    bg: "rgba(45, 140, 135, 0.85)", // teal（lightと同じ）
+    bg: "rgba(45, 140, 135, 0.85)", // teal (same as light)
     border: "rgba(30, 110, 108, 0.9)",
     text: "#ffffff",
   },
 } as const;
 
-
-// 確信度に応じたノード背景色（デフォルト = 濃い色、人間検証対象用）
+// Node background colors by confidence (default = dark tones, for human-verified items)
 export const CONFIDENCE_NODE_COLORS: Record<
   Confidence | "none",
   { bg: string; border: string; text: string }
@@ -174,20 +180,18 @@ export const CONFIDENCE_NODE_COLORS: Record<
   },
 };
 
-
-// 公理ノードの配色（濃い色 = 検証対象）
+// Axiom node colors (dark tones = verification targets)
 export const AXIOM_NODE_COLORS = {
   bg: "bg-teal-600 dark:bg-yellow-400",
   border: "border-teal-800 dark:border-yellow-200",
   text: "text-white dark:text-gray-950",
 };
 
-
-// sorry グロー効果
+// Sorry glow effect
 export const SORRY_GLOW =
   "ring-2 ring-red-400 animate-pulse shadow-[0_0_8px_rgba(248,113,113,0.6)]";
 
-// Kind に応じたフィルターボタン用スタイル
+// Filter button styles by kind
 export const KIND_FILTER_STYLES: {
   id: string;
   label: string;
@@ -195,25 +199,25 @@ export const KIND_FILTER_STYLES: {
 }[] = [
   {
     id: "theorem",
-    label: "定理",
+    label: "Theorem",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   {
     id: "definition",
-    label: "定義",
+    label: "Definition",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   {
     id: "axiom",
-    label: "公理",
+    label: "Axiom",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
 ];
 
-// 確信度に応じたドット色
+// Dot colors by confidence
 export const CONFIDENCE_DOT_COLORS: Record<Confidence, string> = {
   perfect: CONFIDENCE_CONFIG.perfect.dot,
   high: CONFIDENCE_CONFIG.high.dot,
@@ -221,7 +225,7 @@ export const CONFIDENCE_DOT_COLORS: Record<Confidence, string> = {
   low: CONFIDENCE_CONFIG.low.dot,
 };
 
-// 確信度に応じたフィルターボタン用スタイル
+// Filter button styles by confidence
 export const CONFIDENCE_FILTER_STYLES: {
   id: Confidence;
   label: string;
@@ -232,7 +236,7 @@ export const CONFIDENCE_FILTER_STYLES: {
   color: `${CONFIDENCE_CONFIG[id].filterBg} ${CONFIDENCE_CONFIG[id].filterBorder} ${CONFIDENCE_CONFIG[id].filterText} ${CONFIDENCE_CONFIG[id].filterDark}`,
 }));
 
-// 確信度ラベル
+// Confidence labels
 export const CONFIDENCE_LABELS: Record<
   Confidence,
   { label: string; color: string }
@@ -255,7 +259,7 @@ export const CONFIDENCE_LABELS: Record<
   },
 };
 
-// 証明進捗度に応じたフィルターボタン用スタイル
+// Filter button styles by proof progress
 export const PROOF_PROGRESS_FILTER_STYLES: {
   id: ProofProgress;
   label: string;
@@ -266,7 +270,7 @@ export const PROOF_PROGRESS_FILTER_STYLES: {
   color: `${PROOF_PROGRESS_CONFIG[id].filterBg} ${PROOF_PROGRESS_CONFIG[id].filterBorder} ${PROOF_PROGRESS_CONFIG[id].filterText} ${PROOF_PROGRESS_CONFIG[id].filterDark}`,
 }));
 
-// 証明進捗度ラベル
+// Proof progress labels
 export const PROOF_PROGRESS_LABELS: Record<
   ProofProgress,
   { label: string; color: string; indicator: string }
@@ -293,7 +297,7 @@ export const PROOF_PROGRESS_LABELS: Record<
   },
 };
 
-// 定義進捗度に応じたフィルターボタン用スタイル
+// Filter button styles by definition progress
 export const DEF_PROGRESS_FILTER_STYLES: {
   id: DefProgress;
   label: string;
@@ -304,7 +308,7 @@ export const DEF_PROGRESS_FILTER_STYLES: {
   color: `${DEF_PROGRESS_CONFIG[id].filterBg} ${DEF_PROGRESS_CONFIG[id].filterBorder} ${DEF_PROGRESS_CONFIG[id].filterText} ${DEF_PROGRESS_CONFIG[id].filterDark}`,
 }));
 
-// 定義進捗度ラベル
+// Definition progress labels
 export const DEF_PROGRESS_LABELS: Record<
   DefProgress,
   { label: string; color: string }
@@ -319,14 +323,14 @@ export const DEF_PROGRESS_LABELS: Record<
   },
 };
 
-// Kind ラベル
+// Kind labels
 export const KIND_LABELS: Record<string, string> = {
-  theorem: "定理",
-  definition: "定義",
-  axiom: "公理",
+  theorem: "Theorem",
+  definition: "Definition",
+  axiom: "Axiom",
 };
 
-// 詳細分類（SubKind）のフィルタースタイル
+// SubKind filter styles
 export const SUBKIND_FILTER_STYLES: Record<
   SubKind,
   {
@@ -337,53 +341,53 @@ export const SUBKIND_FILTER_STYLES: Record<
 > = {
   theorem_manual: {
     parentKind: "theorem",
-    label: "手動",
+    label: "Manual",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   theorem_auto: {
     parentKind: "theorem",
-    label: "自動",
+    label: "Auto",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   definition: {
     parentKind: "definition",
-    label: "定義",
+    label: "Definition",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   inductive: {
     parentKind: "definition",
-    label: "帰納型",
+    label: "Inductive",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   structure: {
     parentKind: "definition",
-    label: "構造体",
+    label: "Structure",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   abbrev: {
     parentKind: "definition",
-    label: "略記",
+    label: "Abbrev",
     color:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
 };
 
-// SubKind のラベル
+// SubKind labels
 export const SUBKIND_LABELS: Record<SubKind, string> = {
-  theorem_manual: "手動定義定理",
-  theorem_auto: "自動生成定理",
-  definition: "定義",
-  inductive: "帰納型",
-  structure: "構造体",
-  abbrev: "略記",
+  theorem_manual: "Manual Theorem",
+  theorem_auto: "Auto Theorem",
+  definition: "Definition",
+  inductive: "Inductive",
+  structure: "Structure",
+  abbrev: "Abbrev",
 };
 
-// ミニマップ用の色
+// Minimap colors
 export const MINIMAP_COLORS: Record<string, string> = {
   sorry: "#3c7876",
   perfect: "#3c7876",
@@ -394,7 +398,7 @@ export const MINIMAP_COLORS: Record<string, string> = {
   default: "#3c7876",
 };
 
-// 行数フィルターのスタイル
+// Line size filter styles
 export const LINE_SIZE_FILTER_STYLES: {
   id: LineSizeCategory;
   color: string;
@@ -416,13 +420,15 @@ export const LINE_SIZE_FILTER_STYLES: {
   },
 ];
 
-// 8種のEdgeKindを2種の視覚カテゴリに変換
-export function edgeKindToVisualKind(kind: EdgeKind | string | undefined): EdgeVisualKind {
+// Convert 8 EdgeKind variants into 2 visual categories
+export function edgeKindToVisualKind(
+  kind: EdgeKind | string | undefined,
+): EdgeVisualKind {
   if (!kind) return "type";
   return kind.includes("_value_") ? "value" : "type";
 }
 
-// エッジ種類のスタイル（視覚カテゴリ: 色はグレーで統一、実線/破線で区別）
+// Edge kind styles (visual categories: unified gray color, distinguished by solid/dashed lines)
 export const EDGE_KIND_STYLES: Record<
   EdgeVisualKind,
   {
@@ -434,14 +440,14 @@ export const EDGE_KIND_STYLES: Record<
   }
 > = {
   type: {
-    label: "型依存",
+    label: "Type Dep.",
     color: { light: "#9ca3af", dark: "#9ca3af" }, // gray-400
     strokeWidth: 16,
     filterColor:
       "bg-[var(--filter-active-bg)] border-[var(--filter-active-border)] text-[var(--filter-active-text)]",
   },
   value: {
-    label: "値依存",
+    label: "Value Dep.",
     color: { light: "#9ca3af", dark: "#9ca3af" }, // gray-400
     strokeDasharray: "14,9",
     strokeWidth: 14,
@@ -450,8 +456,8 @@ export const EDGE_KIND_STYLES: Record<
   },
 };
 
-// エッジ種類のラベル
+// Edge kind labels
 export const EDGE_KIND_LABELS: Record<EdgeVisualKind, string> = {
-  type: "型依存",
-  value: "値依存",
+  type: "Type Dep.",
+  value: "Value Dep.",
 };
